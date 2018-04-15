@@ -44,7 +44,7 @@ export default {
   computed: {
     members()
     {
-      return this.$store.getters.joinedMeetups;
+      return this.$store.getters.members;
     }
   }
 

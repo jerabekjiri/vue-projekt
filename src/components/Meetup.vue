@@ -75,7 +75,7 @@ export default {
     },
     isJoined()
     {
-      if( this.$store.state.MeetupsModule.meetup.joined == 0)
+      if(this.$store.getters.meetup.joined == 0)
       {
         return false;
       }

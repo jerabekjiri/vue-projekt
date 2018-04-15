@@ -5,13 +5,15 @@ const state = {
   meetup: {},
   joinedMeetups: [],
   discussion: [],
-  editedMeetup: {}
+  editedMeetup: {},
+  members: []
 }
 
 const getters = {
     joinedMeetups: state => state.joinedMeetups,
     meetup: state => state.meetup,
-    discussion: state => state.discussion
+    discussion: state => state.discussion,
+    members: state => state.members
 }
 
 const mutations = {
@@ -31,21 +33,23 @@ const mutations = {
   JOIN_MEETUP(state, meetup, user)
   {
     state.meetup.joined = 1;
+    state.joinedMeetups.push(meetup);
   },
 
   UNJOIN_MEETUP(state, meetup)
   {
     state.meetup.joined = 0;
+    state.joinedMeetups = state.joinedMeetups.filter( m => m.meetup_id != meetup.meetup_id);
   },
 
-  SET_MEMBERS(state, joinedMeetups)
+  SET_MEMBERS(state, members)
   {
-    state.joinedMeetups = joinedMeetups;
+    state.members = members;
   },
 
   ADD_MEMBER(state, user)
   {
-    state.joinedMeetups.push(user);
+    state.members.push(user);
 
     //add to member count
     state.meetup.members++;
@@ -54,7 +58,7 @@ const mutations = {
 
   REMOVE_MEMBER(state, user)
   {
-    state.joinedMeetups = state.joinedMeetups.filter( users => users.user_id != user.user_id);
+    state.members = state.members.filter( users => users.user_id != user.user_id);
 
     //remove from member count
     state.meetup.members--;

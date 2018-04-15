@@ -117,7 +117,7 @@ export default {
       {
         axios.defaults.headers.common['Authorization'] = "Bearer " + token;
         this.$store.dispatch('SIGNIN_USER', token);
-        
+
       }
     }
   },
