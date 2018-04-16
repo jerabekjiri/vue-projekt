@@ -89,29 +89,17 @@ $app->post('/api/auth/signin', function ($request, $response, $args) {
 
 $app->post('/api/auth/signup', function ($request, $response) {
 
-    $db = new db();
+		$db = new db();
 
-    $user = $request->getParsedBody();
+		$user = $request->getParsedBody();
 
-		if(!$user)
-		{
-				return;
-		}
+		$id = $db->INSERT_TO_USERS($user);
 
-  	$id = $db->INSERT_TO_USERS($user);
-
-		$user['user_id'] = $id;
-
-
+		$user = ["user_id" => $id];
 
 		$token = Auth::signToken($user);
 
-		$result = [
-			"token" => $token,
-			"user" => $user
-		];
-
-
+		$result = ["token" => $token];
 		return $response->getBody()->write(json_encode($result));
 });
 

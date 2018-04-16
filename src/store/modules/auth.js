@@ -70,15 +70,15 @@ import axios from 'axios'
 
   AUTH_SIGNUP({ commit, dispatch }, user) {
     return new Promise((resolve, reject) => {
-      commit('AUTH_REQUEST')
-      axios({url: 'http://localhost:4040/api/auth/', data: user, method: 'POST' }).then(resp => {
+      commit('AUTH_REQUEST');
+      axios({url: 'http://localhost:4040/api/auth/signup', data: user, method: 'POST' }).then(resp => {
        const token = resp.data.token;
        localStorage.setItem('user-token', token); // store the token in localstorage
 
        axios.defaults.headers.common['Authorization'] = "Bearer " + token;
       commit('AUTH_SUCCESS', token);
 
-       dispatch('LOGIN_USER', token);
+       dispatch('SIGNIN_USER', token);
        resolve(resp)
      })
    .catch(err => {
@@ -97,6 +97,13 @@ import axios from 'axios'
         commit('SIGNIN_USER', resp.data);
 
         dispatch('SET_JOINED_MEETUPS', resp.data);
+      });
+  },
+
+  SIGNUP_USER({ commit, dispatch }, user)
+  {
+      axios({url: 'http://localhost:4040/api/auth/signup', data: { user }, method: 'POST' }).then(resp => {
+        commit('SIGNIN_USER', resp.data);
       });
   }
 
