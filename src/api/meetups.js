@@ -59,6 +59,16 @@ export default {
   {
     return axios.get(url + '/img/banners/background1', { responseType: 'arraybuffer'  });
 
+  },
+
+  getOrganizedMeetups(userId)
+  {
+    return axios.get(url + `/user/${userId}/organized-meetups`);
+  },
+
+  editMeetup(meetup)
+  {
+    return axios.post(url + `/meetup/edit`, meetup);
   }
 
 }

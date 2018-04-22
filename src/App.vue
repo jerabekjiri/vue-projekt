@@ -51,6 +51,13 @@
             </md-list-item>
           </router-link>
 
+          <router-link to="/organized-meetups">
+            <md-list-item>
+              <md-icon>people</md-icon>
+              <span class="md-list-item-text">Organized meetups</span>
+            </md-list-item>
+         </router-link>
+
           <md-list-item>
             <md-icon>people</md-icon>
             <span class="md-list-item-text">Friends</span>
@@ -64,9 +71,9 @@
       </md-app-drawer>
 
       <md-app-content>
-       <!--<transition name="fade">-->
+       <transition name="fade">
         <router-view></router-view>
-      <!--</transition>-->
+      </transition>
       </md-app-content>
     </md-app>
 
@@ -203,6 +210,13 @@ export default {
 
 .upper{
   text-transform: uppercase;
+}
+
+/*
+ * BugFix select in dialog
+ */
+.md-menu-content {
+  z-index: 10;
 }
 
 </style>

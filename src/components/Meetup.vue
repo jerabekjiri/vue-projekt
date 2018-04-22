@@ -5,7 +5,7 @@
     <md-card-media>
       <img src="../assets/card-default.jpg">
 
-      <md-button class="md-fab md-primary edit-btn" @click="editMeetup(meetup.url)">
+      <md-button v-if="isEditable()" class="md-fab md-primary edit-btn" @click="editMeetup(meetup.url)">
         <md-icon>edit</md-icon>
       </md-button>
 
@@ -14,6 +14,7 @@
     <md-card-area>
       <md-card-header>
         <span class="md-title">{{ meetup.title }}</span>
+        <span class="md-subhead">{{ meetup.date | parseDate }}</span>
         <span v-if="meetup.members > 0" class="md-subhead">Members: {{ meetup.members }}</span>
         <span v-else class="md-subhead">No members coming to this meetup at moment</span>
 
@@ -67,11 +68,12 @@
 
 <script>
 import API from '../api/meetups';
+import Utils from './Utils/Utils';
 export default {
   computed: {
     meetup()
     {
-      return this.$store.state.MeetupsModule.meetup;
+      return this.$store.getters.meetup;
     },
     isJoined()
     {
@@ -85,6 +87,10 @@ export default {
     isSignedIn()
     {
        return this.$store.getters.isAuthenticated;
+    },
+    user()
+    {
+      return this.$store.getters.loggedUser;
     }
 
   },
@@ -94,7 +100,7 @@ export default {
     this.$store.dispatch('GET_MEETUP', url);
 
 
-    /*  API.getImage('kuba').then(response =>{
+    /*  API.getImage('test').then(response =>{
         let image = btoa(
                new Uint8Array(response.data)
                  .reduce((data, byte) => data + String.fromCharCode(byte), '')
@@ -119,6 +125,15 @@ export default {
    {
      this.$store.dispatch('EDITED_MEETUP', this.meetup);
      this.$router.push('/meetup/' + url + '/edited');
+   },
+   isEditable()
+   {
+     if(this.user.user_id != this.meetup.author_id)
+     {
+       return false;
+     }
+
+     return true;
    }
  },
  data()
@@ -126,7 +141,8 @@ export default {
    return {
      img: null
    }
- }
+ },
+ mixins: [Utils]
 }
 </script>
 

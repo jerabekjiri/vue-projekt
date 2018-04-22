@@ -30,8 +30,11 @@ import axios from 'axios'
           SIGNIN_USER(state, user)
           {
             state.loggedUser = user;
-            state.loggedUser.avatar = 'http://localhost:4040/img/avatars/' + state.loggedUser.avatar;
-            console.log(state.loggedUser);
+            if(state.loggedUser.avatar != '')
+            {
+            state.loggedUser = 'http://localhost:4040/img/avatars/' + state.loggedUser.avatar;
+
+            }
           }
        }
 
@@ -83,8 +86,9 @@ import axios from 'axios'
      })
    .catch(err => {
      commit('AUTH_ERROR', err)
+          // if the request fails, remove user token if exists
     localStorage.removeItem('user-token')
-     // if the request fails, remove any possible user token if possible
+
     delete axios.defaults.headers.common['Authorization']
      reject(err)
    })
@@ -96,7 +100,14 @@ import axios from 'axios'
       axios({url: 'http://localhost:4040/api/auth/signin', data: { token }, method: 'POST' }).then(resp => {
         commit('SIGNIN_USER', resp.data);
 
+
+        /*
+         * TODO, only for testing purpose
+         */
         dispatch('SET_JOINED_MEETUPS', resp.data);
+
+        dispatch('SET_ORGANIZED_MEETUPS', resp.data);
+
       });
   },
 

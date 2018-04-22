@@ -14,6 +14,7 @@ const SignUp          = () => import('@/components/SignUp');
 const ProfileSettings = () => import('@/components/ProfileSettings');
 const User            = () => import('@/components/User');
 const EditedMeetup    = () => import('@/components/EditedMeetup');
+const OrganizedMeetups = () => import('@/components/OrganizedMeetups');
 
 Vue.use(Router)
 
@@ -50,6 +51,11 @@ export default new Router({
     {
       path: '/meetups',
       component: MeetupList
+    },
+    {
+      path: '/organized-meetups',
+      component: OrganizedMeetups,
+      beforeEnter: ifAuthenticated
     },
     {
       path: '/profile',

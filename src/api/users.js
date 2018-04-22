@@ -32,6 +32,26 @@ export default {
   getContacts(id)
   {
     return axios.get(url + `/api/user/${id}/contacts`);
+  },
+
+  getContactType()
+  {
+    return axios.get(url + `/api/contact-type`);
+  },
+
+  addContact(contact)
+  {
+    return axios.post(url + `/api/user/contacts`, contact);
+  },
+
+  editContact(contact)
+  {
+    return axios.post(url + `/api/user/contacts/edit`, contact);
+  },
+
+  deleteContact(contact)
+  {
+    return axios.post(url + `/api/user/contacts/delete`, contact);
   }
 
 }

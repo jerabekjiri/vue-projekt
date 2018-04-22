@@ -1,6 +1,6 @@
 <template>
   <div>
-    <md-dialog :md-active.sync="dialog" class="dialog" :md-click-outside-to-close="false">
+    <md-dialog :md-active.sync="dialog" class="dialog" :md-click-outside-to-close="false" :md-close-on-esc="false">
          <md-dialog-title>Create a Meetup</md-dialog-title>
          <md-dialog-content>
            <md-field>
@@ -82,11 +82,12 @@ export default {
 
       this.parseDateToUnixStamp();
 
+      this.setAuthor();
+
       this.$store.dispatch('CREATE_MEETUP', this.form).then( resp => {
 
         this.$emit('close');
-        this.$router.push('/meetup/' + this.form.url + '/edited');
-
+        this.form = {};
       });
     },
     createURL()
@@ -102,7 +103,12 @@ export default {
 
     this.form.date = Date.parse(date)/1000;
 
-    }
+  },
+  setAuthor()
+  {
+    this.form.author_id = this.$store.getters.loggedUser.user_id;
+  }
+
   }
 }
 </script>

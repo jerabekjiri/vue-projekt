@@ -6,14 +6,16 @@ const state = {
   joinedMeetups: [],
   discussion: [],
   editedMeetup: {},
-  members: []
+  members: [],
+  organizedMeetups: []
 }
 
 const getters = {
     joinedMeetups: state => state.joinedMeetups,
     meetup: state => state.meetup,
     discussion: state => state.discussion,
-    members: state => state.members
+    members: state => state.members,
+    organizedMeetups: state => state.organizedMeetups
 }
 
 const mutations = {
@@ -82,6 +84,16 @@ const mutations = {
   EDITED_MEETUP(state, meetup)
   {
     state.editedMeetup = meetup;
+  },
+
+  SET_ORGANIZED_MEETUPS(state, meetups)
+  {
+    state.organizedMeetups = meetups;
+  },
+
+  ADD_ORGANIZED_MEETUP(state, meetup)
+  {
+    state.organizedMeetups.push(meetup);
   }
 }
 
@@ -92,11 +104,17 @@ const actions = {
   });
   },
 
-  GET_MEETUP({ commit, rootState }, meetup) {
-    const userId = rootState.AuthModule.loggedUser.user_id;
+  GET_MEETUP({ commit, rootState }, meetup, user) {
+    return new Promise((resolve) => {
+
+  const userId = rootState.AuthModule.loggedUser.user_id;
+
     API.getMeetupProtected(meetup, userId).then(response => {
       commit('SET_MEETUP', response.data);
+      resolve(response);
     });
+
+  });
   },
 
   SET_JOINED_MEETUPS({ commit }, user)
@@ -162,6 +180,7 @@ CREATE_MEETUP({ commit }, meetup)
   return new Promise((resolve, reject) => {
     API.createMeetup(meetup).then(response => {
       commit('CREATE_MEETUP', meetup);
+      commit('ADD_ORGANIZED_MEETUP', meetup);
       resolve(response);
     });
   })
@@ -171,6 +190,14 @@ EDITED_MEETUP({ commit }, meetup)
 {
   commit('EDITED_MEETUP', meetup);
 },
+
+SET_ORGANIZED_MEETUPS({ commit }, user)
+{
+  API.getOrganizedMeetups(user.user_id).then(resp => {
+    commit('SET_ORGANIZED_MEETUPS', resp.data);
+});
+
+}
 
 }
 

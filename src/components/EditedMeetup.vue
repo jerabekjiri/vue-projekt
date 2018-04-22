@@ -1,15 +1,12 @@
 <template>
-  <div>
+  <div  v-if="isEditable">
 <md-card class="meetup">
   <md-card-media-cover md-solid>
     <md-card-media>
-      <img src="http://localhost:4040/img/avatars/background1.jpg" alt="Skyscraper">
-
+      <img src="../assets/card-default.jpg">
       <md-button class="md-fab md-plain edit-btn" @click="cancelEdit(meetup.url)">
         <md-icon>edit</md-icon>
       </md-button>
-
-      <md-button class="md-raised md-primary  edit-btn btn-actions" @click="saveEdit()">Save</md-button>
 
     </md-card-media>
 
@@ -45,7 +42,7 @@
               <md-tab md-label="Information"></md-tab>
         </md-tabs>
 
-        <div v-if="!editingInfo">
+        <div>
 
         {{ meetup.information }}
 
@@ -54,12 +51,6 @@
         </md-button>
 
       </div>
-
-        <md-field v-else>
-          <label>Information</label>
-          <md-textarea v-model="meetup.information"></md-textarea>
-        </md-field>
-
       </md-card-content>
     </md-card>
 
@@ -74,10 +65,14 @@
     />
 
 
+
+
+
   </div>
 </template>
 
 <script>
+import API from '../api/meetups';
 export default {
   computed: {
     meetup()
@@ -93,13 +88,30 @@ export default {
       dialog: {
         title: null,
         placeholder: null,
-        value: null
-      }
+        value: null,
+        type: null
+      },
+      isEditable: false
     }
   },
   created()
   {
-      this.$store.dispatch('GET_MEETUP', this.$route.params.url);
+      this.$store.dispatch('GET_MEETUP', this.$route.params.url).then(resp => {
+
+        const userId = this.$store.getters.loggedUser.user_id;
+        const author = resp.data.author_id;
+
+        if(userId != author)
+        {
+
+          this.$router.push('/meetup/' + this.meetup.url);
+        }
+        else {
+          this.isEditable = true;
+        }
+
+      });
+
 
   },
   methods: {
@@ -107,32 +119,35 @@ export default {
     {
       this.$router.push('/meetup/' + url);
     },
-    saveEdit()
-    {
-
-    },
-    setDialogProperty(title, placeholder, value)
+    setDialogProperty(title, placeholder, value, type)
     {
       this.dialog.title = title;
       this.dialog.placeholder = placeholder;
       this.dialog.value = value;
+      this.dialog.type = type;
+      this.active = true;
     },
     editLocation()
     {
-      this.setDialogProperty('Meetup location', 'Type location of meetup', this.meetup.location);
-      this.active = true;
+      this.setDialogProperty('Meetup location', 'Type location of meetup', this.meetup.location, 'location');
     },
     editInfo()
     {
-      this.editingInfo = true;
+      this.setDialogProperty('Meetup Information', 'Type Information about meetup', this.meetup.information, 'information');
     },
     editTitle()
     {
-      this.setDialogProperty('Meetup Title', 'Type title of meetup', this.meetup.title);
-      this.active = true;
+      this.setDialogProperty('Meetup Title', 'Type title of meetup', this.meetup.title, 'title');
     },
     confirm()
     {
+      this.dialog.meetup_id = this.meetup.meetup_id;
+
+      let type = this.dialog.type;
+
+      API.editMeetup(this.dialog).then( resp => {
+        this.meetup[type] = this.dialog.value;
+      });
     }
   }
 }

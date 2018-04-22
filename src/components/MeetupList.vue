@@ -13,7 +13,7 @@
         <md-card-area>
           <md-card-header>
             <span class="md-title">{{ meetup.title }}</span>
-            <span class="md-subhead">{{ parseDate(meetup.date) }}</span>
+            <span class="md-subhead">{{ meetup.date | parseDate }}</span>
             <span class="md-subhead">Location: {{ meetup.location }}</span>
             <span v-if="meetup.members > 0"class="md-subhead">Members: {{ meetup.members }}</span>
             <span v-else class="md-subhead">No members coming to this meetup at moment</span>
@@ -35,6 +35,7 @@
 
 <script>
 import API from '../api/meetups';
+import Utils from './Utils/Utils';
 export default {
   data()
   {
@@ -49,23 +50,6 @@ export default {
     }
   },
   methods: {
-      parseDate(unix)
-      {
-         const dt = new Date(unix*1000);
-         let hours = dt.getHours();
-         let minutes = dt.getMinutes();
-         if(hours<9)
-         {
-           hours = `0${hours}`;
-         }
-
-         if(minutes<9)
-         {
-           minutes = `0${minutes}`;
-         }
-
-         return `${dt.getDate()}.${dt.getMonth()+1}.${dt.getFullYear()} ${hours}:${minutes}`;
-      }
     },
     created()
     {
@@ -83,7 +67,8 @@ export default {
             },500)
           }
       });*/
-    }
+    },
+    mixins: [Utils]
 }
 </script>
 
